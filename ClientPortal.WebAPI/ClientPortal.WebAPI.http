@@ -1,6 +1,8 @@
-@ClientPortal.WebAPI_HostAddress = http://localhost:5112
+POST http://localhost:5112/Project
+Content-Type: application/json
 
-GET {{ClientPortal.WebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+"name": "MyProject",
+"description": "Testing API",
+"scopeFeatures": 5
+}

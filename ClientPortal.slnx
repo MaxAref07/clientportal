@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="ClientPortal.Application/ClientPortal.Application.csproj" />
-  <Project Path="ClientPortal.Domain/ClientPortal.Domain.csproj" />
-  <Project Path="ClientPortal.Infrastructure/ClientPortal.Infrastructure.csproj" />
-  <Project Path="ClientPortal.WebAPI/ClientPortal.WebAPI.csproj" />
-</Solution>
