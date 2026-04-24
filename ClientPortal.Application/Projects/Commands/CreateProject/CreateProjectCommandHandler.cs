@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommandHandler :  IRequestHandler<CreateProjectCommand, ProjectDTO>
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, ProjectDTO>
 {
     private readonly IProjectRepository _projectRepository;
     
