@@ -21,11 +21,11 @@ public class ProjectController : ControllerBase
     public async Task<IActionResult> CreateProject(CreateProjectCommand command)
     {
         ProjectDTO responseProject = await _mediator.Send(command);
-        return Ok(responseProject);
+        return CreatedAtAction(nameof(GetProjectById), new { id = responseProject.Id }, responseProject);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProjectDTO>> GetProject(Guid id)
+    public async Task<ActionResult<ProjectDTO>> GetProjectById(Guid id)
     {
         var query = new GetProjectByIdQuery(id);
         ProjectDTO? responseProject = await _mediator.Send(query);
