@@ -1,4 +1,6 @@
 using ClientPortal.Application.Interfaces;
+using ClientPortal.Application.Projects.DTOs;
+using ClientPortal.Application.Projects.Queries.GetProjects;
 using ClientPortal.Domain.Entities;
 
 namespace ClientPortal.Infrastructure.Repositories;
@@ -17,5 +19,12 @@ public class ProjectRepository : IProjectRepository, IReadDbContext
         var project = projects.SingleOrDefault(p => p.Id == id);
 
         return Task.FromResult(project);
+    }
+
+    public Task<List<Project>> GetProjects()
+    {
+        var projects = this.projects;
+        
+        return Task.FromResult(projects);
     }
 }

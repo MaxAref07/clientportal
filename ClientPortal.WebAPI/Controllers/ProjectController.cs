@@ -1,6 +1,7 @@
 using ClientPortal.Application.Projects.Commands.CreateProject;
 using ClientPortal.Application.Projects.DTOs;
 using ClientPortal.Application.Projects.Queries.GetProjectById;
+using ClientPortal.Application.Projects.Queries.GetProjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,5 +33,13 @@ public class ProjectController : ControllerBase
         if (responseProject == null)
             return NotFound();
         return Ok(responseProject);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<ProjectDTO>>> GetAllProjects()
+    {
+        var query = new GetProjectsQuery();
+        var projects = await _mediator.Send(query);
+        return Ok(projects);
     }
 }
