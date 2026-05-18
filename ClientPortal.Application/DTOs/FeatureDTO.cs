@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
 using ClientPortal.Domain.Enums;
 
-namespace ClientPortal.Application.Projects.DTOs;
+namespace ClientPortal.Application.DTOs;
 
 public class FeatureDto
 {
