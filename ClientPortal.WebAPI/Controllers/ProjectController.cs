@@ -1,6 +1,7 @@
 using ClientPortal.Application.Projects.Commands.CreateProject;
 using ClientPortal.Application.Projects.DTOs;
 using ClientPortal.Application.Projects.Queries.GetProjectById;
+using ClientPortal.Application.Projects.Queries.GetProjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +22,24 @@ public class ProjectController : ControllerBase
     public async Task<IActionResult> CreateProject(CreateProjectCommand command)
     {
         ProjectDTO responseProject = await _mediator.Send(command);
-        return Ok(responseProject);
+        return CreatedAtAction(nameof(GetProjectById), new { id = responseProject.Id }, responseProject);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProjectDTO>> GetProject(Guid id)
+    public async Task<ActionResult<ProjectDTO>> GetProjectById(Guid id)
     {
         var query = new GetProjectByIdQuery(id);
         ProjectDTO? responseProject = await _mediator.Send(query);
         if (responseProject == null)
             return NotFound();
         return Ok(responseProject);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<ProjectDTO>>> GetAllProjects()
+    {
+        var query = new GetProjectsQuery();
+        var projects = await _mediator.Send(query);
+        return Ok(projects);
     }
 }
