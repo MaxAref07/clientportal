@@ -1,7 +1,6 @@
 using ClientPortal.Application.DTOs;
 using ClientPortal.Application.Exceptions;
 using ClientPortal.Application.Interfaces;
-using ClientPortal.Application.Projects.DTOs;
 using ClientPortal.Domain.Entities;
 using ClientPortal.Domain.Enums;
 using MediatR;
@@ -35,14 +34,14 @@ public class CreateFeatureCommandHandler : IRequestHandler<CreateFeatureCommand,
         
         var feature = new Feature(Guid.NewGuid(), request.Name, request.Description, request.Priority, FeatureStatus.ToDo, request.ProjectId);
         
-        var createdProject = await _featureRepository.Add(feature);
+        var createdFeature = await _featureRepository.Add(feature);
 
         return new FeatureDto(
-            createdProject.Id,
-            createdProject.Name, 
-            createdProject.Priority,
-            createdProject.Status,
-            createdProject.Description,
-            createdProject.ProjectId);
+            createdFeature.Id,
+            createdFeature.Name, 
+            createdFeature.Priority,
+            createdFeature.Status,
+            createdFeature.Description,
+            createdFeature.ProjectId);
     }
 }
