@@ -1,6 +1,6 @@
 namespace ClientPortal.Application.Exceptions;
 
-public class ProjectNotFoundException : Exception
+public class ProjectNotFoundException : NotFoundException
 {
     public ProjectNotFoundException() : base("Project was not found") { }
 

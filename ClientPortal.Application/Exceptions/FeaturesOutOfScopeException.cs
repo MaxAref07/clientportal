@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace ClientPortal.Application.Exceptions;
 
 public class FeaturesOutOfScopeException : Exception

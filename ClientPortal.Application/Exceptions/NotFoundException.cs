@@ -4,7 +4,7 @@ namespace ClientPortal.Application.Exceptions;
 
 public class NotFoundException : Exception
 {
-    public NotFoundException() : base("Recourse was not found") { }
+    public NotFoundException() : base("Resource was not found") { }
 
     public NotFoundException(string message) : base(message) { }
 
