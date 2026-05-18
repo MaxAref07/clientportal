@@ -21,22 +21,22 @@ public class ProjectController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateProject(CreateProjectCommand command)
     {
-        ProjectDTO responseProject = await _mediator.Send(command);
+        ProjectDto responseProject = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetProjectById), new { id = responseProject.Id }, responseProject);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProjectDTO>> GetProjectById(Guid id)
+    public async Task<ActionResult<ProjectDto>> GetProjectById(Guid id)
     {
         var query = new GetProjectByIdQuery(id);
-        ProjectDTO? responseProject = await _mediator.Send(query);
+        ProjectDto? responseProject = await _mediator.Send(query);
         if (responseProject == null)
             return NotFound();
         return Ok(responseProject);
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProjectDTO>>> GetAllProjects()
+    public async Task<ActionResult<List<ProjectDto>>> GetAllProjects()
     {
         var query = new GetProjectsQuery();
         var projects = await _mediator.Send(query);
