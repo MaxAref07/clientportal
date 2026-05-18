@@ -7,16 +7,16 @@ namespace ClientPortal.Application.Projects.Queries.GetProjectById;
 
 public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, ProjectDto?>
 {
-    private readonly IReadDbContext _dbContext;
+    private readonly IProjectReadRepository _projectReadRepository;
     
-    public GetProjectByIdQueryHandler(IReadDbContext dbContext)
+    public GetProjectByIdQueryHandler(IProjectReadRepository projectReadRepository)
     {
-        _dbContext = dbContext;
+        _projectReadRepository = projectReadRepository;
     }
 
     public async Task<ProjectDto?> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
-        Project? project = await _dbContext.GetProjectById(request.Id);
+        Project? project = await _projectReadRepository.GetProjectById(request.Id);
 
         if (project == null)
             return null;

@@ -13,7 +13,7 @@ public static class DependencyInjection
         services.AddSingleton<IProjectRepository>(sp =>
             sp.GetRequiredService<ProjectRepository>());
 
-        services.AddSingleton<IReadDbContext>(sp =>
+        services.AddSingleton<IProjectReadRepository>(sp =>
             sp.GetRequiredService<ProjectRepository>());
 
         return services;
