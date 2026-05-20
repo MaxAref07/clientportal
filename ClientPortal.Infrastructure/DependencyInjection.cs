@@ -12,9 +12,15 @@ public static class DependencyInjection
 
         services.AddSingleton<IProjectRepository>(sp =>
             sp.GetRequiredService<ProjectRepository>());
-
         services.AddSingleton<IProjectReadRepository>(sp =>
             sp.GetRequiredService<ProjectRepository>());
+        
+        services.AddSingleton<FeatureRepository>();
+        
+        services.AddSingleton<IFeatureRepository>(sp =>
+            sp.GetRequiredService<FeatureRepository>());
+        services.AddSingleton<IFeatureReadRepository>(sp =>
+            sp.GetRequiredService<FeatureRepository>());
 
         return services;
     }
