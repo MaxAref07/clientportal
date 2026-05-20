@@ -5,19 +5,12 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Queries.GetProjects;
 
-public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, List<ProjectDTO>>
+public class GetProjectsQueryHandler(IProjectReadRepository projectReadRepository) : IRequestHandler<GetProjectsQuery, List<ProjectDto>>
 {
-    private readonly IReadDbContext _dbContext;
-    
-    public GetProjectsQueryHandler(IReadDbContext dbContext)
+    public async Task<List<ProjectDto>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
     {
-        _dbContext = dbContext;
-    }
+        List<Project> projects = await projectReadRepository.GetProjects();
 
-    public async Task<List<ProjectDTO>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
-    {
-        List<Project> projects = await _dbContext.GetProjects();
-
-        return new List<ProjectDTO>(projects.Select(project => new ProjectDTO(project.Id, project.Name, project.Description, project.ScopeFeatures)));
+        return new List<ProjectDto>(projects.Select(project => new ProjectDto(project.Id, project.Name, project.Description, project.ScopeFeatures)));
     }
 }

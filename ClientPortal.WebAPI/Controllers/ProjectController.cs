@@ -9,37 +9,30 @@ namespace ClientPortal.WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ProjectController : ControllerBase
+public class ProjectController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    
-    public ProjectController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost]
     public async Task<IActionResult> CreateProject(CreateProjectCommand command)
     {
-        ProjectDTO responseProject = await _mediator.Send(command);
+        ProjectDto responseProject = await mediator.Send(command);
         return CreatedAtAction(nameof(GetProjectById), new { id = responseProject.Id }, responseProject);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProjectDTO>> GetProjectById(Guid id)
+    public async Task<ActionResult<ProjectDto>> GetProjectById(Guid id)
     {
         var query = new GetProjectByIdQuery(id);
-        ProjectDTO? responseProject = await _mediator.Send(query);
+        ProjectDto? responseProject = await mediator.Send(query);
         if (responseProject == null)
             return NotFound();
         return Ok(responseProject);
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProjectDTO>>> GetAllProjects()
+    public async Task<ActionResult<List<ProjectDto>>> GetAllProjects()
     {
         var query = new GetProjectsQuery();
-        var projects = await _mediator.Send(query);
+        var projects = await mediator.Send(query);
         return Ok(projects);
     }
 }

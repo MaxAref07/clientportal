@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Queries.GetProjects;
 
-public class GetProjectsQuery : IRequest<List<ProjectDTO>>
+public class GetProjectsQuery : IRequest<List<ProjectDto>>
 {
     
 }

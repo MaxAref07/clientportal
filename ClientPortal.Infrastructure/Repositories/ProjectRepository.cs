@@ -5,7 +5,7 @@ using ClientPortal.Domain.Entities;
 
 namespace ClientPortal.Infrastructure.Repositories;
 
-public class ProjectRepository : IProjectRepository, IReadDbContext
+public class ProjectRepository : IProjectRepository, IProjectReadRepository
 {
     private readonly List<Project> projects = new List<Project>();
     public Task<Project> Add(Project project)

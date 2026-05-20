@@ -5,22 +5,15 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, ProjectDTO>
+public class CreateProjectCommandHandler(IProjectRepository projectRepository) : IRequestHandler<CreateProjectCommand, ProjectDto>
 {
-    private readonly IProjectRepository _projectRepository;
-    
-    public CreateProjectCommandHandler(IProjectRepository projectRepository)
-    {
-        _projectRepository = projectRepository;
-    }
-
-    public async Task<ProjectDTO> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var project = new Project(Guid.NewGuid(), request.Name, request.Description, request.ScopeFeatures);
         
-        var createdProject = await _projectRepository.Add(project);
+        var createdProject = await projectRepository.Add(project);
 
-        return new ProjectDTO(
+        return new ProjectDto(
             createdProject.Id,
             createdProject.Name, 
             createdProject.Description,

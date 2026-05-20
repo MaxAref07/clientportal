@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Queries.GetProjectById;
 
-public class GetProjectByIdQuery : IRequest<ProjectDTO?>
+public class GetProjectByIdQuery : IRequest<ProjectDto?>
 {
     public Guid Id { get; set; }
     

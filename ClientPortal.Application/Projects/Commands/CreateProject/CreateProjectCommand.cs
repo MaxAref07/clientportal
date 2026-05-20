@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<ProjectDTO>
+public class CreateProjectCommand : IRequest<ProjectDto>
 {
     public required string Name { get; set; }
     public required string Description { get; set; }
