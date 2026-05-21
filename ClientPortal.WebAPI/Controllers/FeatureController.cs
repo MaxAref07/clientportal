@@ -1,5 +1,6 @@
 using ClientPortal.Application.DTOs;
 using ClientPortal.Application.Features.Commands.CreateFeature;
+using ClientPortal.Application.Features.Queries.GetFeatureById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,8 @@ public class FeatureController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<FeatureDto>> GetFeatureById(Guid id)
     {
-        //Mock method, not implemented yet
-        return NotFound();
+        var query = new GetFeatureByIdQuery(id);
+        FeatureDto responseFeature = await mediator.Send(query);
+        return Ok(responseFeature);
     }
 }
