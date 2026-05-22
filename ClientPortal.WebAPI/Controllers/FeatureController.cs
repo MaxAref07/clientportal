@@ -1,6 +1,7 @@
 using ClientPortal.Application.DTOs;
 using ClientPortal.Application.Features.Commands.CreateFeature;
 using ClientPortal.Application.Features.Queries.GetFeatureById;
+using ClientPortal.Application.Features.Queries.GetFeaturesByProjectIdQuery;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,5 +24,13 @@ public class FeatureController(IMediator mediator) : ControllerBase
         var query = new GetFeatureByIdQuery(id);
         FeatureDto responseFeature = await mediator.Send(query);
         return Ok(responseFeature);
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<List<FeatureDto>>> GetFeaturesByProjectId([FromQuery] Guid projectId)
+    {
+        var query = new GetFeaturesByProjectIdQuery(projectId);
+        List<FeatureDto> responseFeatures = await mediator.Send(query);
+        return Ok(responseFeatures);
     }
 }
