@@ -12,7 +12,7 @@ public class FeatureRepository : IFeatureRepository, IFeatureReadRepository
         return Task.FromResult(feature);
     }
 
-    public Task<Feature?> Get(Guid id)
+    public Task<Feature?> GetFeatureById(Guid id)
     {
         var feature = _features.SingleOrDefault(p => p.Id == id);
 
