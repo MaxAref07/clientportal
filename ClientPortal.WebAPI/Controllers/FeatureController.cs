@@ -1,7 +1,10 @@
 using ClientPortal.Application.DTOs;
+using ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 using ClientPortal.Application.Features.Commands.CreateFeature;
 using ClientPortal.Application.Features.Queries.GetFeatureById;
 using ClientPortal.Application.Features.Queries.GetFeaturesByProjectIdQuery;
+using ClientPortal.Domain.Enums;
+using ClientPortal.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,5 +35,18 @@ public class FeatureController(IMediator mediator) : ControllerBase
         var query = new GetFeaturesByProjectIdQuery(projectId);
         List<FeatureDto> responseFeatures = await mediator.Send(query);
         return Ok(responseFeatures);
+    }
+
+    [HttpPatch("{id}/status")]
+    public async Task<ActionResult<FeatureDto>> ChangeFeatureStatus([FromRoute] Guid id, ChangeFeatureStatusRequest request)
+    {
+        var command = new ChangeFeatureStatusCommand
+        {
+            Id = id,
+            NewStatus = request.NewStatus
+        };
+        FeatureDto feature = await mediator.Send(command);
+        
+        return Ok(feature);
     }
 }
