@@ -21,6 +21,10 @@ public class ExceptionHandlerMiddleware : IMiddleware
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "Features Out Of Scope");
         }
+        catch (InvalidFeatureStatusTransitionException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "Invalid Feature Status Transition");
+        }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError, "Internal Server Error");
