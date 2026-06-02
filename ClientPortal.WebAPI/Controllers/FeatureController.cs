@@ -1,4 +1,5 @@
 using ClientPortal.Application.DTOs;
+using ClientPortal.Application.Features.Commands.ChangeFeatureDescription;
 using ClientPortal.Application.Features.Commands.ChangeFeaturePriority;
 using ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 using ClientPortal.Application.Features.Commands.CreateFeature;
@@ -79,6 +80,22 @@ public class FeatureController(IMediator mediator) : ControllerBase
         {
             Id = id,
             NewName = request.NewName
+        };
+        FeatureDto feature = await mediator.Send(command);
+        return Ok(feature);
+    }
+    
+    [HttpPatch("{id}/description")]
+    public async Task<ActionResult<FeatureDto>> ChangeFeatureDescription([FromRoute] Guid id, ChangeFeatureDescriptionCommand request)
+    {
+        if (string.IsNullOrWhiteSpace(request.NewDescription))
+        {
+            return BadRequest("New name must be provided");
+        }
+        var command = new ChangeFeatureDescriptionCommand
+        {
+            Id = id,
+            NewDescription = request.NewDescription
         };
         FeatureDto feature = await mediator.Send(command);
         return Ok(feature);
