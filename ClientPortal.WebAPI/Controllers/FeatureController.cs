@@ -55,6 +55,9 @@ public class FeatureController(IMediator mediator) : ControllerBase
     [HttpPatch("{id}/priority")]
     public async Task<ActionResult<FeatureDto>> ChangeFeaturePriority([FromRoute] Guid id, ChangeFeaturePriorityRequest request)
     {
+        if (!Enum.IsDefined(typeof(FeaturePriority), request.NewPriority))
+            return BadRequest("Invalid priority");
+        
         var command = new ChangeFeaturePriorityCommand()
         {
             Id = id,
@@ -68,9 +71,9 @@ public class FeatureController(IMediator mediator) : ControllerBase
     [HttpPatch("{id}/name")]
     public async Task<ActionResult<FeatureDto>> RenameFeature([FromRoute] Guid id, RenameFeatureCommand request)
     {
-        if (request.NewName is null || request.NewName.Length == 0)
+        if (string.IsNullOrWhiteSpace(request.NewName))
         {
-            return BadRequest();
+            return BadRequest("New name must be provided");
         }
         var command = new RenameFeatureCommand()
         {
