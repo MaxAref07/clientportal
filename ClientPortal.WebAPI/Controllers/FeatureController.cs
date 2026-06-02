@@ -90,7 +90,7 @@ public class FeatureController(IMediator mediator) : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(request.NewDescription))
         {
-            return BadRequest("New name must be provided");
+            return BadRequest("New description must be provided");
         }
         var command = new ChangeFeatureDescriptionCommand
         {
