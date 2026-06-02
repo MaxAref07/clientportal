@@ -2,6 +2,7 @@ using ClientPortal.Application.DTOs;
 using ClientPortal.Application.Features.Commands.ChangeFeaturePriority;
 using ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 using ClientPortal.Application.Features.Commands.CreateFeature;
+using ClientPortal.Application.Features.Commands.RenameFeature;
 using ClientPortal.Application.Features.Queries.GetFeatureById;
 using ClientPortal.Application.Features.Queries.GetFeaturesByProjectIdQuery;
 using ClientPortal.Domain.Enums;
@@ -61,6 +62,22 @@ public class FeatureController(IMediator mediator) : ControllerBase
         };
         FeatureDto feature = await mediator.Send(command);
         
+        return Ok(feature);
+    }
+
+    [HttpPatch("{id}/name")]
+    public async Task<ActionResult<FeatureDto>> RenameFeature([FromRoute] Guid id, RenameFeatureCommand request)
+    {
+        if (request.NewName is null || request.NewName.Length == 0)
+        {
+            return BadRequest();
+        }
+        var command = new RenameFeatureCommand()
+        {
+            Id = id,
+            NewName = request.NewName
+        };
+        FeatureDto feature = await mediator.Send(command);
         return Ok(feature);
     }
 }
