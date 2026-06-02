@@ -70,7 +70,7 @@ public class FeatureController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id}/name")]
-    public async Task<ActionResult<FeatureDto>> RenameFeature([FromRoute] Guid id, RenameFeatureCommand request)
+    public async Task<ActionResult<FeatureDto>> RenameFeature([FromRoute] Guid id, RenameFeatureRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.NewName))
         {
@@ -86,7 +86,7 @@ public class FeatureController(IMediator mediator) : ControllerBase
     }
     
     [HttpPatch("{id}/description")]
-    public async Task<ActionResult<FeatureDto>> ChangeFeatureDescription([FromRoute] Guid id, ChangeFeatureDescriptionCommand request)
+    public async Task<ActionResult<FeatureDto>> ChangeFeatureDescription([FromRoute] Guid id, ChangeFeatureDescriptionRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.NewDescription))
         {
