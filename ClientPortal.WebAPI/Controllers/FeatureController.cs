@@ -1,4 +1,5 @@
 using ClientPortal.Application.DTOs;
+using ClientPortal.Application.Features.Commands.ChangeFeaturePriority;
 using ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 using ClientPortal.Application.Features.Commands.CreateFeature;
 using ClientPortal.Application.Features.Queries.GetFeatureById;
@@ -44,6 +45,19 @@ public class FeatureController(IMediator mediator) : ControllerBase
         {
             Id = id,
             NewStatus = request.NewStatus
+        };
+        FeatureDto feature = await mediator.Send(command);
+        
+        return Ok(feature);
+    }
+
+    [HttpPatch("{id}/priority")]
+    public async Task<ActionResult<FeatureDto>> ChangeFeaturePriority([FromRoute] Guid id, ChangeFeaturePriorityRequest request)
+    {
+        var command = new ChangeFeaturePriorityCommand()
+        {
+            Id = id,
+            NewPriority = request.NewPriority
         };
         FeatureDto feature = await mediator.Send(command);
         
