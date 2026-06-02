@@ -25,6 +25,10 @@ public class ExceptionHandlerMiddleware : IMiddleware
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "Invalid Feature Status Transition");
         }
+        catch (ArgumentException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest, "Argument Error");
+        }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError, "Internal Server Error");
