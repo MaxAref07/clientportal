@@ -1,3 +1,4 @@
+using ClientPortal.Application.Projects.Commands.ChangeProjectDescription;
 using ClientPortal.Application.Projects.Commands.CreateProject;
 using ClientPortal.Application.Projects.Commands.RenameProject;
 using ClientPortal.Application.Projects.DTOs;
@@ -50,6 +51,22 @@ public class ProjectController(IMediator mediator) : ControllerBase
             NewName = request.NewName
         };
         
+        ProjectDto project = await mediator.Send(command);
+        return Ok(project);
+    }
+    
+    [HttpPatch("{id}/description")]
+    public async Task<ActionResult<ProjectDto>> ChangeProjectDescription([FromRoute] Guid id, ChangeProjectDescriptionRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.NewDescription))
+            return BadRequest("New description must be provided");
+
+        var command = new ChangeProjectDescriptionCommand()
+        {
+            Id = id,
+            NewDescription = request.NewDescription
+        };
+
         ProjectDto project = await mediator.Send(command);
         return Ok(project);
     }
