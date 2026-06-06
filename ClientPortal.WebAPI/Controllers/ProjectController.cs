@@ -1,7 +1,9 @@
 using ClientPortal.Application.Projects.Commands.CreateProject;
+using ClientPortal.Application.Projects.Commands.RenameProject;
 using ClientPortal.Application.Projects.DTOs;
 using ClientPortal.Application.Projects.Queries.GetProjectById;
 using ClientPortal.Application.Projects.Queries.GetProjects;
+using ClientPortal.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,5 +36,21 @@ public class ProjectController(IMediator mediator) : ControllerBase
         var query = new GetProjectsQuery();
         var projects = await mediator.Send(query);
         return Ok(projects);
+    }
+    
+    [HttpPatch("{id}/name")]
+    public async Task<ActionResult<ProjectDto>> RenameProject([FromRoute] Guid id, RenameProjectRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.NewName))
+            return BadRequest("New name must be provided");
+
+        var command = new RenameProjectCommand()
+        {
+            Id = id,
+            NewName = request.NewName
+        };
+        
+        ProjectDto project = await mediator.Send(command);
+        return Ok(project);
     }
 }
