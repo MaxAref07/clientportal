@@ -1,4 +1,5 @@
 using ClientPortal.Application.Projects.Commands.ChangeProjectDescription;
+using ClientPortal.Application.Projects.Commands.ChangeProjectScopeFeatures;
 using ClientPortal.Application.Projects.Commands.CreateProject;
 using ClientPortal.Application.Projects.Commands.RenameProject;
 using ClientPortal.Application.Projects.DTOs;
@@ -67,6 +68,23 @@ public class ProjectController(IMediator mediator) : ControllerBase
             NewDescription = request.NewDescription
         };
 
+        ProjectDto project = await mediator.Send(command);
+        return Ok(project);
+    }
+
+    [HttpPatch("{id}/scope")]
+    public async Task<ActionResult<ProjectDto>> ChangeProjectScopeFeatures([FromRoute] Guid id,
+        ChangeProjectScopeFeaturesRequest request)
+    {
+        if (request.NewScopeFeatures < 1)
+            return BadRequest("New feature scope must be greater than 1");
+
+        var command = new ChangeProjectScopeFeaturesCommand()
+        {
+            Id = id,
+            NewScopeFeatures = request.NewScopeFeatures
+        };
+        
         ProjectDto project = await mediator.Send(command);
         return Ok(project);
     }
