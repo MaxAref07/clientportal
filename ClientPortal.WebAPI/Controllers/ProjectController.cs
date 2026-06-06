@@ -77,7 +77,7 @@ public class ProjectController(IMediator mediator) : ControllerBase
         ChangeProjectScopeFeaturesRequest request)
     {
         if (request.NewScopeFeatures < 1)
-            return BadRequest("New feature scope must be greater than 1");
+            return BadRequest("New feature scope must be greater than 0");
 
         var command = new ChangeProjectScopeFeaturesCommand()
         {
