@@ -25,6 +25,10 @@ public class ExceptionHandlerMiddleware : IMiddleware
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "Invalid Feature Status Transition");
         }
+        catch (MinimumFeatureScopeException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "New Feature Scope Exceeds Minimum Feature Scope");
+        }
         catch (ArgumentException ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest, "Argument Error");

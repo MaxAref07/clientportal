@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.ChangeProjectScopeFeatures;
 
-public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository projectReadRepository) : IRequestHandler<ChangeProjectScopeFeaturesCommand, ProjectDto>
+public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository projectReadRepository, IFeatureReadRepository featureReadRepository) : IRequestHandler<ChangeProjectScopeFeaturesCommand, ProjectDto>
 {
     public async Task<ProjectDto> Handle(ChangeProjectScopeFeaturesCommand request, CancellationToken cancellationToken)
     {
@@ -13,6 +13,12 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
         
         if (project == null)
             throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
+
+        var features = await featureReadRepository.GetFeatures();
+        var projectFeatures = features.Count(f => f.ProjectId == project.Id);
+        
+        if (features.Count(f => f.ProjectId == project.Id) > request.NewScopeFeatures)
+            throw new MinimumFeatureScopeException(projectFeatures, request.NewScopeFeatures);
         
         project.ChangeScope(request.NewScopeFeatures);
         
