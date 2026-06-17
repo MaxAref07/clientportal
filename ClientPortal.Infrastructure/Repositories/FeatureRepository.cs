@@ -1,3 +1,4 @@
+using ClientPortal.Application.Exceptions;
 using ClientPortal.Application.Interfaces;
 using ClientPortal.Domain.Entities;
 
@@ -30,5 +31,12 @@ public class FeatureRepository : IFeatureRepository, IFeatureReadRepository
     {
         var features = this._features.Where(f => f.ProjectId == id).ToList();
         return Task.FromResult(features);
+    }
+
+    public Task<Feature> Delete(Guid featureId)
+    {
+        var feature = _features.SingleOrDefault(p => p.Id == featureId);
+        _features.Remove(feature);
+        return Task.FromResult(feature);
     }
 }
