@@ -35,7 +35,7 @@ public class FeatureRepository : IFeatureRepository, IFeatureReadRepository
 
     public Task<Feature> Delete(Guid featureId)
     {
-        var feature = _features.SingleOrDefault(p => p.Id == featureId);
+        var feature = _features.SingleOrDefault(p => p.Id == featureId)!;
         _features.Remove(feature);
         return Task.FromResult(feature);
     }
