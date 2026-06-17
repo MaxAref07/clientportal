@@ -43,6 +43,8 @@ public class FeatureController(IMediator mediator) : ControllerBase
     [HttpPatch("{id}/status")]
     public async Task<ActionResult<FeatureDto>> ChangeFeatureStatus([FromRoute] Guid id, ChangeFeatureStatusRequest request)
     {
+        if (!Enum.IsDefined(typeof(FeaturePriority), request.NewStatus))
+            return BadRequest("Invalid Status");
         var command = new ChangeFeatureStatusCommand
         {
             Id = id,
