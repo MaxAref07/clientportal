@@ -3,6 +3,7 @@ using ClientPortal.Application.Features.Commands.ChangeFeatureDescription;
 using ClientPortal.Application.Features.Commands.ChangeFeaturePriority;
 using ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 using ClientPortal.Application.Features.Commands.CreateFeature;
+using ClientPortal.Application.Features.Commands.DeleteFeature;
 using ClientPortal.Application.Features.Commands.RenameFeature;
 using ClientPortal.Application.Features.Queries.GetFeatureById;
 using ClientPortal.Application.Features.Queries.GetFeaturesByProjectIdQuery;
@@ -101,5 +102,18 @@ public class FeatureController(IMediator mediator) : ControllerBase
         };
         FeatureDto feature = await mediator.Send(command);
         return Ok(feature);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<FeatureDto>> DeleteFeature(Guid id)
+    {
+        var query = new DeleteFeatureCommand
+        {
+            Id = id
+        };
+        
+        FeatureDto feature = await mediator.Send(query);
+        
+        return NoContent();
     }
 }
