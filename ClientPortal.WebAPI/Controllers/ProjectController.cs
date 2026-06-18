@@ -1,6 +1,7 @@
 using ClientPortal.Application.Projects.Commands.ChangeProjectDescription;
 using ClientPortal.Application.Projects.Commands.ChangeProjectScopeFeatures;
 using ClientPortal.Application.Projects.Commands.CreateProject;
+using ClientPortal.Application.Projects.Commands.DeleteProject;
 using ClientPortal.Application.Projects.Commands.RenameProject;
 using ClientPortal.Application.Projects.DTOs;
 using ClientPortal.Application.Projects.Queries.GetProjectById;
@@ -87,5 +88,18 @@ public class ProjectController(IMediator mediator) : ControllerBase
         
         ProjectDto project = await mediator.Send(command);
         return Ok(project);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProject(Guid id)
+    {
+        var command = new DeleteProjectCommand()
+        {
+            Id = id
+        };
+        
+        await mediator.Send(command);
+        
+        return NoContent();
     }
 }
