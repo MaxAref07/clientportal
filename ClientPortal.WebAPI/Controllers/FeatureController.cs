@@ -112,7 +112,7 @@ public class FeatureController(IMediator mediator) : ControllerBase
             Id = id
         };
         
-        FeatureDto feature = await mediator.Send(query);
+        await mediator.Send(query);
         
         return NoContent();
     }
