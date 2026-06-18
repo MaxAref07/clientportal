@@ -7,24 +7,31 @@ namespace ClientPortal.Infrastructure.Repositories;
 
 public class ProjectRepository : IProjectRepository, IProjectReadRepository
 {
-    private readonly List<Project> projects = new List<Project>();
+    private readonly List<Project> _projects = new List<Project>();
     public Task<Project> Add(Project project)
     {
-        projects.Add(project);
+        _projects.Add(project);
         return Task.FromResult(project);
     }
 
     public Task<Project?> GetProjectById(Guid id)
     {
-        var project = projects.SingleOrDefault(p => p.Id == id);
+        var project = _projects.SingleOrDefault(p => p.Id == id);
 
         return Task.FromResult(project);
     }
 
     public Task<List<Project>> GetProjects()
     {
-        var projects = this.projects;
+        var projects = this._projects;
         
         return Task.FromResult(projects);
+    }
+    
+    public Task<Project> Delete(Guid projectId)
+    {
+        var project = _projects.SingleOrDefault(p => p.Id == projectId)!;
+        _projects.Remove(project);
+        return Task.FromResult(project);
     }
 }
