@@ -5,9 +5,9 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.DeleteFeature;
 
-public class DeleteFeatureCommandHandler(IFeatureReadRepository featureReadRepository, IFeatureRepository featureRepository) : IRequestHandler<DeleteFeatureCommand, FeatureDto>
+public class DeleteFeatureCommandHandler(IFeatureReadRepository featureReadRepository, IFeatureRepository featureRepository) : IRequestHandler<DeleteFeatureCommand>
 {
-    public async Task<FeatureDto> Handle(DeleteFeatureCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteFeatureCommand request, CancellationToken cancellationToken)
     {
         var feature = await featureReadRepository.GetFeatureById(request.Id);
 
@@ -15,7 +15,5 @@ public class DeleteFeatureCommandHandler(IFeatureReadRepository featureReadRepos
             throw new FeatureNotFoundException($"Feature with id {request.Id} was not found");
         
         await featureRepository.Delete(request.Id);
-
-        return new FeatureDto(feature.Id, feature.Name, feature.Priority, feature.Status, feature.Description, feature.ProjectId);
     }
 }

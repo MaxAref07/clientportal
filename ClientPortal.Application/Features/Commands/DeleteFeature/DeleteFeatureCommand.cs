@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.DeleteFeature;
 
-public class DeleteFeatureCommand : IRequest<FeatureDto>
+public class DeleteFeatureCommand : IRequest
 {
     public required Guid Id { get; set; }
 }
