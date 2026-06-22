@@ -1,0 +1,25 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">ClientPortal</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      @for (project of projects(); track project.id) {
+        <div class="p-5 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow cursor-pointer">
+          <h2 class="text-xl font-bold text-gray-900 mb-2">{{ project.name }}</h2>
+          <p class="text-gray-600 text-sm line-clamp-3 mb-4">{{ project.description }}</p>
+
+          <div class="inline-flex items-center text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg">
+            Feature Limit: {{ project.scopeFeatures }}
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full p-12 bg-white rounded-xl border-2 border-dashed border-gray-200 text-center">
+          <p class="text-gray-500 text-lg">There are no projects yet</p>
+          <p class="text-gray-400 text-sm mt-1">Start backend and create projects with Swagger/Postman</p>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

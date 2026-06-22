@@ -1,0 +1,12 @@
+{
+  "/Project": {
+    "target": "http://localhost:5112",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/Feature": {
+    "target": "http://localhost:5112",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}
