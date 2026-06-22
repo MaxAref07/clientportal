@@ -3,4 +3,6 @@ export interface ProjectDto {
   name: string;
   description: string;
   scopeFeatures: number;
+  currentFeaturesCount: number;
+  completedFeaturesCount: number;
 }
