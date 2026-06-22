@@ -1,6 +1,7 @@
 using ClientPortal.Application.Exceptions;
 using ClientPortal.Application.Interfaces;
 using ClientPortal.Application.Projects.DTOs;
+using ClientPortal.Domain.Enums;
 using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.ChangeProjectScopeFeatures;
@@ -21,7 +22,15 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
             throw new MinimumFeatureScopeException(projectFeatures, request.NewScopeFeatures);
         
         project.ChangeScope(request.NewScopeFeatures);
+
+        var currentFeaturesCount = projectFeatures;
+        var completedFeaturesCount = features.Count(x => x.Status == FeatureStatus.Done && x.ProjectId == project.Id);
         
-        return new ProjectDto(project.Id, project.Name, project.Description, project.ScopeFeatures);
+        return new ProjectDto(project.Id,
+            project.Name,
+            project.Description,
+            project.ScopeFeatures,
+            currentFeaturesCount,
+            completedFeaturesCount);
     }
 }
