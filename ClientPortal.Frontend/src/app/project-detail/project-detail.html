@@ -1,0 +1,84 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+  <div class="max-w-4xl mx-auto">
+
+    <a routerLink="/" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-6 transition-colors">
+      ← Back to Projects
+    </a>
+
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <p class="text-gray-500 mt-4 font-medium">Loading project details...</p>
+      </div>
+    }
+
+    @else if (project(); as p) {
+
+      <div class="p-6 bg-white rounded-xl shadow-md border border-gray-100 mb-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div class="flex-1">
+            <h1 class="text-3xl font-bold text-gray-900">{{ p.name }}</h1>
+            <p class="text-gray-600 mt-2 text-base">{{ p.description }}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 min-w-60 w-full sm:w-auto">
+
+            <div class="col-span-2 flex justify-between items-center text-xs font-medium text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+              <span class="uppercase tracking-wider text-[10px]">Limit:</span>
+              <span class="font-bold text-gray-900 text-sm">{{ p.scopeFeatures }}</span>
+            </div>
+
+            <div class="flex flex-col p-2 bg-blue-50/60 rounded-lg border border-blue-100 text-center">
+              <span class="text-[9px] uppercase tracking-wider text-blue-500 font-semibold">Current</span>
+              <span class="text-sm font-bold text-blue-700 mt-0.5">{{ p.currentFeaturesCount }}</span>
+            </div>
+
+            <div class="flex flex-col p-2 bg-green-50/60 rounded-lg border border-green-100 text-center">
+              <span class="text-[9px] uppercase tracking-wider text-green-500 font-semibold">Completed</span>
+              <span class="text-sm font-bold text-green-700 mt-0.5">{{ p.completedFeaturesCount }}</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        @for (feature of features(); track feature.id) {
+          <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow transition-shadow flex justify-between items-center">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">{{ feature.name }}</h3>
+              <p class="text-gray-500 text-sm mt-1">{{ feature.description }}</p>
+            </div>
+
+            <div class="flex gap-2">
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-md border"
+                    [class.bg-red-50]="feature.priority === 2" [class.text-red-700]="feature.priority === 2" [class.border-red-100]="feature.priority === 2"
+                    [class.bg-yellow-50]="feature.priority === 1" [class.text-yellow-700]="feature.priority === 1" [class.border-yellow-100]="feature.priority === 1"
+                    [class.bg-gray-50]="feature.priority === 0" [class.text-gray-600]="feature.priority === 0" [class.border-gray-100]="feature.priority === 0">
+                @if (feature.priority === 2) { High Priority }
+                @else if (feature.priority === 1) { Medium Priority }
+                @else { Low Priority }
+              </span>
+
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-md border"
+                    [class.bg-gray-100]="feature.status === 0" [class.text-gray-700]="feature.status === 0"
+                    [class.bg-blue-50]="feature.status === 1" [class.text-blue-700]="feature.status === 1"
+                    [class.bg-purple-50]="feature.status === 2" [class.text-purple-700]="feature.status === 2"
+                    [class.bg-green-50]="feature.status === 3" [class.text-green-700]="feature.status === 3">
+                @if (feature.status === 0) { Status: To Do }
+                @else if (feature.status === 1) { Status: In Progress }
+                @else if (feature.status === 2) { Status: On Review }
+                @else { Done }
+              </span>
+            </div>
+          </div>
+        } @empty {
+          <div class="p-8 bg-white rounded-xl border-2 border-dashed border-gray-200 text-center">
+            <p class="text-gray-500">No features inside this project yet.</p>
+          </div>
+        }
+      </div>
+
+    }
+  </div>
+</div>

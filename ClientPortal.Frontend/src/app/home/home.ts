@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ProjectService } from '../services/project.service';
 import { ProjectDto } from '../types/project.types';
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
