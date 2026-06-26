@@ -6,3 +6,9 @@ export interface ProjectDto {
   currentFeaturesCount: number;
   completedFeaturesCount: number;
 }
+
+export interface CreateProjectDto {
+  name: string;
+  description: string;
+  scopeFeatures: number;
+}
