@@ -19,3 +19,10 @@ export interface FeatureDto {
   description: string;
   projectId: string;
 }
+
+export interface CreateFeatureDto {
+  name: string;
+  description: string;
+  priority: FeaturePriority;
+  projectId: string;
+}
