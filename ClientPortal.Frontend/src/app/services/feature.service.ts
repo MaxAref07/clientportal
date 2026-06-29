@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FeatureDto } from '../types/feature.types';
+import { CreateFeatureDto, FeatureDto } from '../types/feature.types';
 
 @Injectable({
   providedIn: 'root'
@@ -15,5 +15,9 @@ export class FeatureService {
     return this.httpClient.get<FeatureDto[]>(this.apiUrl, {
       params: { projectId },
     });
+  }
+
+  createFeature(createFeatureDto: CreateFeatureDto): Observable<FeatureDto> {
+    return this.httpClient.post<FeatureDto>(`${this.apiUrl}`, createFeatureDto);
   }
 }
