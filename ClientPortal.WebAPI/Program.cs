@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Register services
 builder.Services.AddOpenApi();
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Postgres")!);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
