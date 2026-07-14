@@ -8,7 +8,8 @@ namespace ClientPortal.Application.Projects.Commands.DeleteProject;
 public class DeleteProjectCommandHandler(IProjectReadRepository projectReadRepository,
     IProjectRepository projectRepository,
     IFeatureReadRepository featureReadRepository,
-    IFeatureRepository featureRepository) : IRequestHandler<DeleteProjectCommand>
+    IFeatureRepository featureRepository,
+    IUnitOfWork unitOfWork) : IRequestHandler<DeleteProjectCommand>
 {
     public async Task Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
@@ -26,5 +27,7 @@ public class DeleteProjectCommandHandler(IProjectReadRepository projectReadRepos
         }
         
         await projectRepository.Delete(request.Id);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

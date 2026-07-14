@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.ChangeFeatureStatus;
 
-public class ChangeFeatureStatusCommandHandler(IFeatureReadRepository featureReadRepository) : IRequestHandler<ChangeFeatureStatusCommand, FeatureDto>
+public class ChangeFeatureStatusCommandHandler(IFeatureReadRepository featureReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<ChangeFeatureStatusCommand, FeatureDto>
 {
     public async Task<FeatureDto> Handle(ChangeFeatureStatusCommand request, CancellationToken cancellationToken)
     {
@@ -22,7 +22,9 @@ public class ChangeFeatureStatusCommandHandler(IFeatureReadRepository featureRea
         {
             throw new InvalidFeatureStatusTransitionException(ex.Message, ex);
         }
-
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return new FeatureDto(feature.Id, feature.Name, feature.Priority, feature.Status, feature.Description, feature.ProjectId);
     }
 }

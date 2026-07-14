@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.ChangeFeatureDescription;
 
-public class ChangeFeatureDescriptionCommandHandler(IFeatureReadRepository featureReadRepository) : IRequestHandler<ChangeFeatureDescriptionCommand, FeatureDto>
+public class ChangeFeatureDescriptionCommandHandler(IFeatureReadRepository featureReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<ChangeFeatureDescriptionCommand, FeatureDto>
 {
     public async Task<FeatureDto> Handle(ChangeFeatureDescriptionCommand request, CancellationToken cancellationToken)
     {
@@ -15,6 +15,8 @@ public class ChangeFeatureDescriptionCommandHandler(IFeatureReadRepository featu
             throw new FeatureNotFoundException($"Feature with id {request.Id} was not found");
         
         feature.ChangeDescription(request.NewDescription);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return new FeatureDto(feature.Id, feature.Name, feature.Priority, feature.Status, feature.Description, feature.ProjectId);
     }
