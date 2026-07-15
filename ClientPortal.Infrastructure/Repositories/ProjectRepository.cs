@@ -1,37 +1,32 @@
 using ClientPortal.Application.Interfaces;
-using ClientPortal.Application.Projects.DTOs;
-using ClientPortal.Application.Projects.Queries.GetProjects;
 using ClientPortal.Domain.Entities;
+using ClientPortal.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClientPortal.Infrastructure.Repositories;
 
-public class ProjectRepository : IProjectRepository, IProjectReadRepository
+public class ProjectRepository(AppDbContext context) : IProjectRepository, IProjectReadRepository
 {
-    private readonly List<Project> _projects = new List<Project>();
     public Task<Project> Add(Project project)
     {
-        _projects.Add(project);
+        context.Projects.Add(project);
         return Task.FromResult(project);
     }
 
-    public Task<Project?> GetProjectById(Guid id)
+    public async Task<Project?> GetProjectById(Guid id)
     {
-        var project = _projects.SingleOrDefault(p => p.Id == id);
-
-        return Task.FromResult(project);
+        return await context.Projects.SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<List<Project>> GetProjects()
+    public async Task<List<Project>> GetProjects()
     {
-        var projects = this._projects;
-        
-        return Task.FromResult(projects);
+        return await context.Projects.ToListAsync();
     }
-    
-    public Task<Project> Delete(Guid projectId)
+
+    public async Task<Project> Delete(Guid projectId)
     {
-        var project = _projects.SingleOrDefault(p => p.Id == projectId)!;
-        _projects.Remove(project);
-        return Task.FromResult(project);
+        var project = await context.Projects.SingleOrDefaultAsync(p => p.Id == projectId);
+        context.Projects.Remove(project!);
+        return project!;
     }
 }

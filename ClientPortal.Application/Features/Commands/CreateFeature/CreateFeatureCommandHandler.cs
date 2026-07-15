@@ -7,7 +7,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.CreateFeature;
 
-public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, IFeatureReadRepository readFeatureRepository, IProjectReadRepository projectReadRepository) : IRequestHandler<CreateFeatureCommand, FeatureDto>
+public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, IFeatureReadRepository readFeatureRepository, IProjectReadRepository projectReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<CreateFeatureCommand, FeatureDto>
 {
     public async Task<FeatureDto> Handle(CreateFeatureCommand request, CancellationToken cancellationToken)
     {
@@ -25,6 +25,8 @@ public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, I
         
         var createdFeature = await featureRepository.Add(feature);
 
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return new FeatureDto(
             createdFeature.Id,
             createdFeature.Name, 

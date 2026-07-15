@@ -1,42 +1,37 @@
-using ClientPortal.Application.Exceptions;
 using ClientPortal.Application.Interfaces;
 using ClientPortal.Domain.Entities;
+using ClientPortal.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClientPortal.Infrastructure.Repositories;
 
-public class FeatureRepository : IFeatureRepository, IFeatureReadRepository
+public class FeatureRepository(AppDbContext context) : IFeatureRepository, IFeatureReadRepository
 {
-    private readonly List<Feature> _features = new List<Feature>();
     public Task<Feature> Add(Feature feature)
     {
-        _features.Add(feature);
+        context.Features.Add(feature);
         return Task.FromResult(feature);
     }
 
-    public Task<Feature?> GetFeatureById(Guid id)
+    public async Task<Feature?> GetFeatureById(Guid id)
     {
-        var feature = _features.SingleOrDefault(p => p.Id == id);
-
-        return Task.FromResult(feature);
+        return await context.Features.SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<List<Feature>> GetFeatures()
+    public async Task<List<Feature>> GetFeatures()
     {
-        var features = this._features;
-        
-        return Task.FromResult(features);
+        return await context.Features.ToListAsync();
     }
 
-    public Task<List<Feature>> GetFeaturesByProjectId(Guid id)
+    public async Task<List<Feature>> GetFeaturesByProjectId(Guid id)
     {
-        var features = this._features.Where(f => f.ProjectId == id).ToList();
-        return Task.FromResult(features);
+        return await context.Features.Where(f => f.ProjectId == id).ToListAsync();
     }
 
-    public Task<Feature> Delete(Guid featureId)
+    public async Task<Feature> Delete(Guid featureId)
     {
-        var feature = _features.SingleOrDefault(p => p.Id == featureId)!;
-        _features.Remove(feature);
-        return Task.FromResult(feature);
+        var feature = await context.Features.SingleOrDefaultAsync(p => p.Id == featureId);
+        context.Features.Remove(feature!);
+        return feature!;
     }
 }

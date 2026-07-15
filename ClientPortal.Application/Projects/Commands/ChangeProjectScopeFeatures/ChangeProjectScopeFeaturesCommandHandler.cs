@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.ChangeProjectScopeFeatures;
 
-public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository projectReadRepository, IFeatureReadRepository featureReadRepository) : IRequestHandler<ChangeProjectScopeFeaturesCommand, ProjectDto>
+public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository projectReadRepository, IFeatureReadRepository featureReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<ChangeProjectScopeFeaturesCommand, ProjectDto>
 {
     public async Task<ProjectDto> Handle(ChangeProjectScopeFeaturesCommand request, CancellationToken cancellationToken)
     {
@@ -22,6 +22,8 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
             throw new MinimumFeatureScopeException(projectFeatures, request.NewScopeFeatures);
         
         project.ChangeScope(request.NewScopeFeatures);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var currentFeaturesCount = projectFeatures;
         var completedFeaturesCount = features.Count(x => x.Status == FeatureStatus.Done && x.ProjectId == project.Id);

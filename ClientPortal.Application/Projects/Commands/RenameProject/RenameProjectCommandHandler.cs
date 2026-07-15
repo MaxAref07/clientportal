@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Projects.Commands.RenameProject;
 
-public class RenameProjectCommandHandler(IProjectReadRepository projectReadRepository, IFeatureReadRepository featureReadRepository) : IRequestHandler<RenameProjectCommand, ProjectDto>
+public class RenameProjectCommandHandler(IProjectReadRepository projectReadRepository, IFeatureReadRepository featureReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<RenameProjectCommand, ProjectDto>
 {
     public async Task<ProjectDto> Handle(RenameProjectCommand request, CancellationToken cancellationToken)
     {
@@ -16,6 +16,8 @@ public class RenameProjectCommandHandler(IProjectReadRepository projectReadRepos
             throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
         
         project.Rename(request.NewName);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         
         var currentFeatures = await featureReadRepository.GetFeaturesByProjectId(project.Id);
         var currentFeaturesCount = currentFeatures.Count;
