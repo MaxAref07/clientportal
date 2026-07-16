@@ -18,14 +18,9 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository, IFeat
         return await context.Features.SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<List<Feature>> GetFeatures()
-    {
-        return await context.Features.ToListAsync();
-    }
-
     public async Task<List<Feature>> GetFeaturesByProjectId(Guid id)
     {
-        return await context.Features.Where(f => f.ProjectId == id).ToListAsync();
+        return await context.Features.AsNoTracking().Where(f => f.ProjectId == id).ToListAsync();
     }
 
     public async Task<Feature> Delete(Guid featureId)
