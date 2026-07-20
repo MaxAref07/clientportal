@@ -15,22 +15,14 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
         if (project == null)
             throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
         
-        var projectFeatures = await featureReadRepository.GetFeaturesByProjectId(project.Id);
-        var projectFeaturesCount = projectFeatures.Count;
-        if (projectFeaturesCount > request.NewScopeFeatures)
-            throw new MinimumFeatureScopeException(projectFeaturesCount, request.NewScopeFeatures);
+        var currentFeaturesCount = await featureReadRepository.CountByProjectId(project.Id);
+        if (currentFeaturesCount > request.NewScopeFeatures)
+            throw new MinimumFeatureScopeException(currentFeaturesCount, request.NewScopeFeatures);
         
         project.ChangeScope(request.NewScopeFeatures);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var completedFeaturesCount = projectFeatures.Count(x => x.Status == FeatureStatus.Done);
-        
-        return new ProjectDto(project.Id,
-            project.Name,
-            project.Description,
-            project.ScopeFeatures,
-            projectFeaturesCount,
-            completedFeaturesCount);
+        return (await projectReadRepository.GetProjectWithCountsById(project.Id))!;
     }
 }
