@@ -1,7 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ProjectService } from '../services/project.service';
+import { AuthService } from '../services/auth.service';
 import { CreateProjectDto, ProjectDto } from '../types/project.types';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 
@@ -13,6 +14,8 @@ import { FormBuilder } from '@angular/forms';
 })
 export class Home implements OnInit {
   private projectService = inject(ProjectService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
   projects = signal<ProjectDto[]>([]);
@@ -37,6 +40,11 @@ export class Home implements OnInit {
       next: (data) => this.projects.set(data),
       error: (err) => console.error('Error getting projects', err),
     });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   toggleForm() {

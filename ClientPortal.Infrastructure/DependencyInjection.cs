@@ -1,4 +1,5 @@
 using ClientPortal.Application.Interfaces;
+using ClientPortal.Infrastructure.Auth;
 using ClientPortal.Infrastructure.Persistence;
 using ClientPortal.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,23 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString));
         
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        services.AddScoped<UserRepository>();
+        
+        services.AddScoped<IUserRepository>(sp =>
+            sp.GetRequiredService<UserRepository>());
+        services.AddScoped<IUserReadRepository>(sp =>
+            sp.GetRequiredService<UserRepository>());
 
+        services.AddScoped<MagicLinkRepository>();
+        
+        services.AddScoped<IMagicLinkRepository>(sp =>
+            sp.GetRequiredService<MagicLinkRepository>());
+        services.AddScoped<IMagicLinkReadRepository>(sp => 
+            sp.GetRequiredService<MagicLinkRepository>());
+        
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        
         return services;
     }
 }

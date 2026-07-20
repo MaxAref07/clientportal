@@ -10,10 +10,12 @@ using ClientPortal.Application.Features.Queries.GetFeaturesByProjectIdQuery;
 using ClientPortal.Domain.Enums;
 using ClientPortal.WebAPI.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientPortal.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class FeatureController(IMediator mediator) : ControllerBase
