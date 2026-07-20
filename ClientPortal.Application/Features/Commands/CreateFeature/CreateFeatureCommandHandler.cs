@@ -7,7 +7,7 @@ using MediatR;
 
 namespace ClientPortal.Application.Features.Commands.CreateFeature;
 
-public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, IFeatureReadRepository readFeatureRepository, IProjectReadRepository projectReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<CreateFeatureCommand, FeatureDto>
+public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, IFeatureReadRepository featureReadRepository, IProjectReadRepository projectReadRepository, IUnitOfWork unitOfWork) : IRequestHandler<CreateFeatureCommand, FeatureDto>
 {
     public async Task<FeatureDto> Handle(CreateFeatureCommand request, CancellationToken cancellationToken)
     {
@@ -16,9 +16,9 @@ public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, I
         if (project == null)
             throw new ProjectNotFoundException($"Project with id {request.ProjectId} not found");
         
-        var features = await readFeatureRepository.GetFeaturesByProjectId(project.Id);
+        var featuresCount = await featureReadRepository.CountByProjectId(project.Id);
         
-        if (features.Count() >= project.ScopeFeatures)
+        if (featuresCount >= project.ScopeFeatures)
             throw new FeaturesOutOfScopeException($"Feature scope for project {project.Id} has been exceeded");
         
         var feature = new Feature(Guid.NewGuid(), request.Name, request.Description, request.Priority, FeatureStatus.ToDo, request.ProjectId);
