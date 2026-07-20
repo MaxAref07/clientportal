@@ -27,11 +27,16 @@ public class ExceptionHandlerMiddleware : IMiddleware
         }
         catch (MinimumFeatureScopeException ex)
         {
-            await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict, "New Feature Scope Exceeds Minimum Feature Scope");
+            await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict,
+                "New Feature Scope Exceeds Minimum Feature Scope");
         }
         catch (ArgumentException ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest, "Argument Error");
+        }
+        catch (InvalidMagicLinkException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.Unauthorized, "Invalid Magic Link");
         }
         catch (Exception ex)
         {

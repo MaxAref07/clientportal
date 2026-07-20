@@ -8,10 +8,12 @@ using ClientPortal.Application.Projects.Queries.GetProjectById;
 using ClientPortal.Application.Projects.Queries.GetProjects;
 using ClientPortal.WebAPI.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientPortal.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ProjectController(IMediator mediator) : ControllerBase
