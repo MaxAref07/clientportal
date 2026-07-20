@@ -8,5 +8,10 @@
     "target": "http://localhost:5112",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/Auth": {
+    "target": "http://localhost:5112",
+    "secure": false,
+    "logLevel": "debug"
   }
 }
