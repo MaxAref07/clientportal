@@ -48,6 +48,6 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository, IProj
             p.ScopeFeatures,
             context.Features.Count(f => f.ProjectId == p.Id),
             context.Features.Count(f => f.ProjectId == p.Id && f.Status == FeatureStatus.Done)
-        )).FirstOrDefaultAsync();
+        )).SingleOrDefaultAsync();
     }
 }

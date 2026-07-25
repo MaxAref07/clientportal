@@ -24,12 +24,19 @@ public class AppDbContext : DbContext
             .Property(e => e.Name).HasMaxLength(150);
         modelBuilder.Entity<Feature>()
             .Property(e => e.Description).HasMaxLength(2000);
+        modelBuilder.Entity<Feature>()
+            .HasOne<Project>()
+            .WithMany()
+            .HasForeignKey(e => e.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Feature>()
+            .HasIndex(e => e.ProjectId);
         
         modelBuilder.Entity<Project>()
             .Property(e => e.Name).HasMaxLength(150);
         modelBuilder.Entity<Project>()
             .Property(e => e.Description).HasMaxLength(2000);
-        
+
         modelBuilder.Entity<User>()
             .Property(e => e.Email).HasMaxLength(256).IsRequired();
         modelBuilder.Entity<User>()

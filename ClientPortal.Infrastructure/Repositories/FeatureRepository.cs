@@ -29,4 +29,9 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository, IFeat
         context.Features.Remove(feature!);
         return feature!;
     }
+
+    public async Task<int> CountByProjectId(Guid projectId)
+    {
+        return await context.Features.CountAsync(p => p.ProjectId == projectId);
+    }
 }
