@@ -40,6 +40,16 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MaxAref07_clientportal" /o:"maxaref07" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.coverage.exclusions="**/*"
+          $coverageExclusions = "**/Migrations/**,**/Program.cs,ClientPortal.Application/**,ClientPortal.Infrastructure/**,ClientPortal.WebAPI/**,ClientPortal.Frontend/**"
+
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"MaxAref07_clientportal" /o:"maxaref07" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.coverage.exclusions="$coverageExclusions" /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="TestResults/*.trx"
+
           dotnet build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          dotnet test --no-build --collect:"XPlat Code Coverage;Format=opencover" --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+          $testExitCode = $LASTEXITCODE
+
+          # Always close the analysis so a failed run is still reported, then fail the job.
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+          if ($testExitCode -ne 0) { exit $testExitCode }
