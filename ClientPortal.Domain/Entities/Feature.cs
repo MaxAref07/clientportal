@@ -13,8 +13,8 @@ public class Feature : Entity
 
     public Feature(Guid id, string name, string description, FeaturePriority priority, FeatureStatus status, Guid projectId) : base(id)
     {
-        Guard.Against.NullOrEmpty(name, nameof(name));
-        Guard.Against.NullOrEmpty(description, nameof(description));
+        Guard.Against.NullOrWhiteSpace(name, nameof(name));
+        Guard.Against.NullOrWhiteSpace(description, nameof(description));
         Guard.Against.EnumOutOfRange(status, nameof(status));
         Guard.Against.EnumOutOfRange(priority, nameof(priority));
         Guard.Against.Default(projectId, nameof(projectId));
@@ -28,7 +28,7 @@ public class Feature : Entity
 
     public void Rename(string name)
     {
-        Guard.Against.NullOrEmpty(name, nameof(name));
+        Guard.Against.NullOrWhiteSpace(name, nameof(name));
         Name = name;
     }
 
