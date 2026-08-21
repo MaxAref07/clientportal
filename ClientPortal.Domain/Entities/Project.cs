@@ -1,4 +1,6 @@
 using Ardalis.GuardClauses;
+using ClientPortal.Domain.Enums;
+using ClientPortal.Domain.Exceptions;
 
 namespace ClientPortal.Domain.Entities;
 
@@ -19,6 +21,22 @@ public class Project : Entity
         ScopeFeatures = scopeFeatures;
     }
 
+    public Feature AddFeature(Guid featureId,
+        string featureName,
+        string featureDescription,
+        FeaturePriority featurePriority,
+        int existingFeatureCount)
+    {
+        if (!CanAccommodate(existingFeatureCount + 1, ScopeFeatures)) throw new FeaturesOutOfScopeException($"Feature scope for project {Id} has been exceeded");
+        
+        return new Feature(featureId,
+            featureName,
+            featureDescription,
+            featurePriority,
+            FeatureStatus.ToDo,
+            Id);
+    }
+    
     public void Rename(string name)
     {
         Guard.Against.NullOrWhiteSpace(name, nameof(name));
@@ -31,9 +49,13 @@ public class Project : Entity
         Description = description;
     }
 
-    public void ChangeScope(int scopeFeatures)
+    public void ChangeScope(int newScopeFeatures, int existingFeatureCount)
     {
-        Guard.Against.NegativeOrZero(scopeFeatures, nameof(scopeFeatures));
-        ScopeFeatures = scopeFeatures;
+        Guard.Against.NegativeOrZero(newScopeFeatures, nameof(newScopeFeatures));
+        if (!CanAccommodate(existingFeatureCount, newScopeFeatures)) throw new MinimumFeatureScopeException(existingFeatureCount, newScopeFeatures);
+        ScopeFeatures = newScopeFeatures;
     }
+
+    private bool CanAccommodate(int resultingFeatureCount, int scopeLimit) =>
+        resultingFeatureCount <= scopeLimit;
 }

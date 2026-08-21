@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using ClientPortal.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using ClientPortal.Domain.Exceptions;
 
 namespace ClientPortal.WebAPI.Middleware;
 

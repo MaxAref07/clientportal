@@ -16,13 +16,10 @@ public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, I
         if (project == null)
             throw new ProjectNotFoundException($"Project with id {request.ProjectId} not found");
         
-        var featuresCount = await featureReadRepository.CountByProjectId(project.Id);
-        
-        if (featuresCount >= project.ScopeFeatures)
-            throw new FeaturesOutOfScopeException($"Feature scope for project {project.Id} has been exceeded");
-        
-        var feature = new Feature(Guid.NewGuid(), request.Name, request.Description, request.Priority, FeatureStatus.ToDo, request.ProjectId);
-        
+        var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
+
+        var feature = project.AddFeature(Guid.NewGuid(), request.Name, request.Description, request.Priority,
+            existingFeatureCount);
         var createdFeature = await featureRepository.Add(feature);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
