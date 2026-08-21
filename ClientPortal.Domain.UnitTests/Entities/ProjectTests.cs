@@ -1,4 +1,6 @@
 using ClientPortal.Domain.Entities;
+using ClientPortal.Domain.Enums;
+using ClientPortal.Domain.Exceptions;
 using FluentAssertions;
 
 namespace ClientPortal.Domain.UnitTests.Entities;
@@ -226,7 +228,7 @@ public class ProjectTests
         var newScopeFeatures = 11;
         
         //Act
-        var act = () => project.ChangeScope(newScopeFeatures);
+        var act = () => project.ChangeScope(newScopeFeatures, 7);
         
         //Assert
         act.Should().NotThrow();
@@ -249,11 +251,79 @@ public class ProjectTests
             validScopeFeatures);
 
         //Act
-        var act = () => project.ChangeScope(newScopeFeatures);
+        var act = () => project.ChangeScope(newScopeFeatures, 7);
 
         //Assert
         act.Should().Throw<ArgumentException>()
             .WithMessage("*ScopeFeatures*");
         project.ScopeFeatures.Should().Be(validScopeFeatures);
+    }
+
+    [Fact]
+    public void ChangeScope_WithInvalidExistingFeatureCount_ThrowsException()
+    {
+        //Arrange
+        var validId = Guid.NewGuid();
+        var validName = "ValidName";
+        var validDescription = "ValidDescription";
+        var validScopeFeatures = 10;
+        var validNewScopeFeatures = 6;
+        var project = new Project(validId,
+            validName,
+            validDescription,
+            validScopeFeatures);
+
+        //Act
+        var act = () => project.ChangeScope(validNewScopeFeatures, 7);
+
+        //Assert
+        act.Should().Throw<MinimumFeatureScopeException>()
+            .WithMessage("*scope*");
+        project.ScopeFeatures.Should().Be(validScopeFeatures);
+    }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(5)]
+    [InlineData(9)]
+    public void AddFeature_WithValidExistingFeatureCount_ReturnsFeature(int existingFeatureCount)
+    {
+        //Arrange
+        var validScopeFeatures = 10;
+        var project = new Project(Guid.NewGuid(), "ValidName", "ValidDescription", validScopeFeatures);
+        var featureId = Guid.NewGuid();
+        var featureName = "FeatureName";
+        var featureDescription = "FeatureDescription";
+        var featurePriority = FeaturePriority.High;
+
+        //Act
+        Feature? feature = null;
+        var act = () => feature = project.AddFeature(featureId, featureName, featureDescription, featurePriority, existingFeatureCount);
+
+        //Assert
+        act.Should().NotThrow();
+        feature!.Id.Should().Be(featureId);
+        feature.Name.Should().Be(featureName);
+        feature.Description.Should().Be(featureDescription);
+        feature.Priority.Should().Be(featurePriority);
+        feature.Status.Should().Be(FeatureStatus.ToDo);
+        feature.ProjectId.Should().Be(project.Id);
+    }
+
+    [Theory]
+    [InlineData(10)]
+    [InlineData(11)]
+    public void AddFeature_WithScopeFeaturesExceeded_ThrowsException(int existingFeatureCount)
+    {
+        //Arrange
+        var validScopeFeatures = 10;
+        var project = new Project(Guid.NewGuid(), "ValidName", "ValidDescription", validScopeFeatures);
+
+        //Act
+        var act = () => project.AddFeature(Guid.NewGuid(), "FeatureName", "FeatureDescription", FeaturePriority.High, existingFeatureCount);
+
+        //Assert
+        act.Should().Throw<FeaturesOutOfScopeException>()
+            .WithMessage("*scope*");
     }
 }
