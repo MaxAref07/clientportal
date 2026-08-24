@@ -15,11 +15,9 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
         if (project == null)
             throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
         
-        var currentFeaturesCount = await featureReadRepository.CountByProjectId(project.Id);
-        if (currentFeaturesCount > request.NewScopeFeatures)
-            throw new MinimumFeatureScopeException(currentFeaturesCount, request.NewScopeFeatures);
+        var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
         
-        project.ChangeScope(request.NewScopeFeatures);
+        project.ChangeScope(request.NewScopeFeatures, existingFeatureCount);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

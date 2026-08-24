@@ -1,4 +1,4 @@
-namespace ClientPortal.Application.Exceptions;
+namespace ClientPortal.Domain.Exceptions;
 
 public class FeaturesOutOfScopeException : Exception
 {

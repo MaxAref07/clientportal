@@ -105,44 +105,4 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
             .DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-
-    [Fact]
-    public async Task ChangeProjectScopeFeaturesCommand_WithScopeFeaturesExceeded_ThrowsException()
-    {
-        //Arrange
-        var validId = Guid.NewGuid();
-        var validNewScopeFeatures = 15;
-        var traceProject = TestData.Project(id: validId);
-        var command = new ChangeProjectScopeFeaturesCommand
-        {
-            Id = validId,
-            NewScopeFeatures = validNewScopeFeatures
-        };
-        _projectReadRepository
-            .GetProjectById(validId)
-            .Returns(traceProject);
-        _featureReadRepository
-            .CountByProjectId(validId)
-            .Returns(16);
-        
-        //Act
-        var act = () => _handler.Handle(command, CancellationToken.None);
-        
-        //Assert
-        traceProject.ScopeFeatures.Should().Be(10);
-        await act.Should().ThrowAsync<MinimumFeatureScopeException>()
-            .WithMessage("*Feature*");
-        await _projectReadRepository
-            .Received(1)
-            .GetProjectById(validId);
-        await _featureReadRepository
-            .Received(1)
-            .CountByProjectId(validId);
-        await _projectReadRepository
-            .DidNotReceive()
-            .GetProjectWithCountsById(validId);
-        await _unitOfWork
-            .DidNotReceive()
-            .SaveChangesAsync(Arg.Any<CancellationToken>());
-    }
 }
