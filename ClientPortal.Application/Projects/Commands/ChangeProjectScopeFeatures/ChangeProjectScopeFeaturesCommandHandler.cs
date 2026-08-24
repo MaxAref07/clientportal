@@ -10,17 +10,23 @@ public class ChangeProjectScopeFeaturesCommandHandler(IProjectReadRepository pro
 {
     public async Task<ProjectDto> Handle(ChangeProjectScopeFeaturesCommand request, CancellationToken cancellationToken)
     {
-        var project = await projectReadRepository.GetProjectById(request.Id);
-        
-        if (project == null)
-            throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
-        
-        var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
-        
-        project.ChangeScope(request.NewScopeFeatures, existingFeatureCount);
-        
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        var updatedProject = await unitOfWork.ExecuteInTransactionAsync(async ct =>
+        {
+            var project = await projectReadRepository.GetProjectByIdForUpdate(request.Id);
 
-        return (await projectReadRepository.GetProjectWithCountsById(project.Id))!;
+            if (project == null)
+                throw new ProjectNotFoundException($"Project with id {request.Id} was not found");
+
+            var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
+
+            project.ChangeScope(request.NewScopeFeatures, existingFeatureCount);
+
+            await unitOfWork.SaveChangesAsync(ct);
+            
+            return project;
+
+        }, cancellationToken);
+        
+        return (await projectReadRepository.GetProjectWithCountsById(updatedProject.Id))!;
     }
 }
