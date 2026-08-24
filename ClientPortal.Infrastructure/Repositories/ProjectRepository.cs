@@ -20,6 +20,11 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository, IProj
         return await context.Projects.SingleOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<Project?> GetProjectByIdForUpdate(Guid id)
+    {
+        return await context.Projects.FromSqlInterpolated($"SELECT * FROM \"Projects\" WHERE \"Id\" = {id} FOR UPDATE ").SingleOrDefaultAsync();
+    }
+
     public async Task<Project> Delete(Guid projectId)
     {
         var project = await context.Projects.SingleOrDefaultAsync(p => p.Id == projectId);
