@@ -18,6 +18,9 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
     public ChangeProjectScopeFeaturesCommandHandlerTests()
     {
         _handler = new ChangeProjectScopeFeaturesCommandHandler(_projectReadRepository, _featureReadRepository, _unitOfWork);
+        _unitOfWork
+            .ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task<Project>>>(), Arg.Any<CancellationToken>())
+            .Returns(ci => ci.Arg<Func<CancellationToken, Task<Project>>>()(ci.Arg<CancellationToken>()));
     }
 
     [Theory]
@@ -34,7 +37,7 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
             NewScopeFeatures = validNewScopeFeatures
         };
         _projectReadRepository
-            .GetProjectById(validId)
+            .GetProjectByIdForUpdate(validId)
             .Returns(traceProject);
         _featureReadRepository
             .CountByProjectId(validId)
@@ -59,7 +62,7 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
         traceProject.ScopeFeatures.Should().Be(validNewScopeFeatures);
         await _projectReadRepository
             .Received(1)
-            .GetProjectById(validId);
+            .GetProjectByIdForUpdate(validId);
         await _featureReadRepository
             .Received(1)
             .CountByProjectId(validId);
@@ -83,7 +86,7 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
             NewScopeFeatures = validNewScopeFeatures
         };
         _projectReadRepository
-            .GetProjectById(validId)
+            .GetProjectByIdForUpdate(validId)
             .Returns((Project?)null);
         
         //Act
@@ -94,7 +97,7 @@ public class ChangeProjectScopeFeaturesCommandHandlerTests
             .WithMessage("*Project*");
         await _projectReadRepository
             .Received(1)
-            .GetProjectById(validId);
+            .GetProjectByIdForUpdate(validId);
         await _featureReadRepository
             .DidNotReceive()
             .CountByProjectId(validId);

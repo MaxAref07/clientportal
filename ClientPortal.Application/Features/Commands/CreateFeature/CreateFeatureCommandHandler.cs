@@ -11,18 +11,27 @@ public class CreateFeatureCommandHandler(IFeatureRepository featureRepository, I
 {
     public async Task<FeatureDto> Handle(CreateFeatureCommand request, CancellationToken cancellationToken)
     {
-        var project = await projectReadRepository.GetProjectById(request.ProjectId);
+        var createdFeature = await unitOfWork.ExecuteInTransactionAsync(async t =>
+        {
+            var project = await projectReadRepository.GetProjectByIdForUpdate(request.ProjectId);
 
-        if (project == null)
-            throw new ProjectNotFoundException($"Project with id {request.ProjectId} not found");
-        
-        var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
+            if (project == null)
+                throw new ProjectNotFoundException($"Project with id {request.ProjectId} not found");
 
-        var feature = project.AddFeature(Guid.NewGuid(), request.Name, request.Description, request.Priority,
-            existingFeatureCount);
-        var createdFeature = await featureRepository.Add(feature);
+            var existingFeatureCount = await featureReadRepository.CountByProjectId(project.Id);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+            var feature = project.AddFeature(Guid.NewGuid(),
+                request.Name,
+                request.Description,
+                request.Priority,
+                existingFeatureCount);
+            
+            var addedFeature = await featureRepository.Add(feature);
+
+            await unitOfWork.SaveChangesAsync(t);
+            
+            return addedFeature;
+        }, cancellationToken);
         
         return new FeatureDto(
             createdFeature.Id,

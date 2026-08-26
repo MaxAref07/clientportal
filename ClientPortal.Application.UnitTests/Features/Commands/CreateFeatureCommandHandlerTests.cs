@@ -20,6 +20,9 @@ public class CreateFeatureCommandHandlerTests
     public CreateFeatureCommandHandlerTests()
     {
         _handler = new CreateFeatureCommandHandler(_featureRepository, _featureReadRepository, _projectReadRepository, _unitOfWork);
+        _unitOfWork
+            .ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task<Feature>>>(), Arg.Any<CancellationToken>())
+            .Returns(ci => ci.Arg<Func<CancellationToken, Task<Feature>>>()(ci.Arg<CancellationToken>()));
     }
     
     [Fact]
@@ -38,7 +41,7 @@ public class CreateFeatureCommandHandlerTests
             ProjectId = validProjectId
         };
         _projectReadRepository
-            .GetProjectById(validProjectId)
+            .GetProjectByIdForUpdate(validProjectId)
             .Returns(TestData.Project(id: validProjectId));
         _featureReadRepository
             .CountByProjectId(validProjectId)
@@ -56,7 +59,7 @@ public class CreateFeatureCommandHandlerTests
         result.Priority.Should().Be(validPriority);
         result.Status.Should().Be(FeatureStatus.ToDo);
         result.ProjectId.Should().Be(validProjectId);
-        await _projectReadRepository.Received(1).GetProjectById(validProjectId);
+        await _projectReadRepository.Received(1).GetProjectByIdForUpdate(validProjectId);
         await _featureReadRepository.Received(1).CountByProjectId(validProjectId);
         await _featureRepository.Received(1).Add(Arg.Any<Feature>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -75,7 +78,7 @@ public class CreateFeatureCommandHandlerTests
             Priority = validPriority,
             ProjectId = validProjectId};
         _projectReadRepository
-            .GetProjectById(validProjectId)
+            .GetProjectByIdForUpdate(validProjectId)
             .Returns((Project?)null);
         
         //Act
@@ -84,7 +87,7 @@ public class CreateFeatureCommandHandlerTests
         //Assert
         await act.Should().ThrowAsync<ProjectNotFoundException>()
             .WithMessage("*Project*");
-        await _projectReadRepository.Received(1).GetProjectById(validProjectId);
+        await _projectReadRepository.Received(1).GetProjectByIdForUpdate(validProjectId);
         await _featureReadRepository.DidNotReceive().CountByProjectId(validProjectId);
         await _featureRepository.DidNotReceive().Add(Arg.Any<Feature>());
         await _unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
