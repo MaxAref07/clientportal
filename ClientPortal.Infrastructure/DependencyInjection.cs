@@ -45,6 +45,8 @@ public static class DependencyInjection
             sp.GetRequiredService<MagicLinkRepository>());
         
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        services.AddScoped<ICurrentUser, CurrentUser>();
         
         return services;
     }
