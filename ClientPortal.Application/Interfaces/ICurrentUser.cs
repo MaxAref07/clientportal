@@ -2,7 +2,7 @@ namespace ClientPortal.Application.Interfaces;
 
 public interface ICurrentUser
 {
-    Guid? UserId { get; }
+    Guid UserId { get; }
     string? Email { get; }
     bool IsAuthenticated { get; }
 }
